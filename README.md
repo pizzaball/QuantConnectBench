@@ -111,15 +111,3 @@ python run_agentic.py \
     --workspace ~/lean-workspace \
     --batch-size 2
 ```
-
-## About the data
-
-LEAN needs market data in its own folder format. Options:
-
-- **`lean init`** bundles a small free sample dataset — a handful of symbols
-  over a fixed window. Notably, **SPY daily covers 1998-01-02 → 2021-03-31**,
-  so the bundled `examples/sma_crossover.py` uses 2010–2020 to stay inside it.
-- **Bring your own** data in LEAN's CSV layout and point `--data-folder` at it.
-- **Subscribe** to QuantConnect's data (this is the only part that costs money /
-  uses a token — and only for *downloading* their data, not for running the
-  engine).
