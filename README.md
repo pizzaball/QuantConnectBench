@@ -17,7 +17,6 @@ Faithful QuantConnect strategy checking using the **LEAN engine**, run
 
 ```bash
 pip install -r requirements.txt        # installs the Lean CLI
-# Install Docker Desktop (or the docker daemon) and start it.
 
 # Create a Lean workspace — this is where your data lives.
 # `lean init` initializes the CURRENT directory (it takes no path argument),
@@ -113,24 +112,6 @@ python run_agentic.py \
     --batch-size 2
 ```
 
-**Important — this is real LEAN, so it's slow and data-bound:**
-
-- Each task spins up a LEAN Docker container, so keep `--batch-size` modest
-  (default 4 for single-shot, 2 for agentic). Concurrent backtests run in worker
-  threads, but too many containers will thrash your machine.
-- The bundled `data/benchmark_tasks.json` (10 tasks across easy/medium/hard)
-  uses **SPY/AAPL/IBM/BAC over 2008–2020**, which the free `lean init` sample
-  data covers — so it runs out of the box. Add your own tasks/data to scale up
-  toward QuantCode-Bench's 400-task scope.
-
-You can also call the pipeline directly:
-
-```python
-from qc_faithful import evaluate_strategy
-r = evaluate_strategy(code, workspace_dir="~/lean-workspace")
-print(r["reward"], r["trade_count"])
-```
-
 ## About the data
 
 LEAN needs market data in its own folder format. Options:
@@ -142,22 +123,3 @@ LEAN needs market data in its own folder format. Options:
 - **Subscribe** to QuantConnect's data (this is the only part that costs money /
   uses a token — and only for *downloading* their data, not for running the
   engine).
-
-A backtest that **runs but places zero trades** is usually a data-range
-mismatch, not a strategy bug: if you ask for dates the data folder doesn't
-cover, LEAN runs with no bars, indicators never warm up, and nothing trades.
-Check what you actually have, e.g.:
-
-```bash
-unzip -p ~/lean-workspace/data/equity/usa/daily/spy.zip | head -1   # first bar
-unzip -p ~/lean-workspace/data/equity/usa/daily/spy.zip | tail -1   # last bar
-```
-
-## Tests
-
-The logic that doesn't need Docker — compilation, structure validation, and
-LEAN result parsing — is covered by a dependency-free test:
-
-```bash
-python3 tests/test_basics.py
-```
